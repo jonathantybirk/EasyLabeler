@@ -63,7 +63,7 @@ class State:
         if not os.path.exists(os.path.join(DATA_DIR, self.current_video, 'annotations.json')): self.detections = {}
         else:
             with open(os.path.join(DATA_DIR, self.current_video, 'annotations.json')) as f:
-                self.detections = {int(k): Detection.from_json(v) for k,v in json.load(f).items()}
+                self.detections = {k: Detection.from_json(v) for k,v in json.load(f).items()}
 
     def save_annotations(self):
         if self.detections:
@@ -92,6 +92,5 @@ class State:
     def get_next_track_id(self) -> int:
         if not self.detections: return 0
         used_ids = [d.track_id for d in self.detections.values()]
-        print(self.detections.keys())
         free_ids = [_id for _id in range(int(max(self.detections.keys())) + 2) if _id not in used_ids]
         return min(free_ids)
