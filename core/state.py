@@ -73,7 +73,7 @@ class State:
 
     def delete_detection(self, track_ids: List[int]):
         assert all(_id in self.detections for _id in track_ids), f"Detection ids: {[_id for _id in track_ids if _id in self.detections]} do not exist"
-        self.detections = {int(k): v for k, v in self.detections.items() if k not in track_ids}
+        self.detections = {k: v for k, v in self.detections.items() if k not in track_ids}
 
     def add_detection(self, detection: Detection):
         assert detection.track_id not in self.detections, f"Detection with track id {detection.track_id} already exists"
