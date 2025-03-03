@@ -16,8 +16,8 @@ class MainWindow(QMainWindow):
         screen_width = screen.width()
         screen_height = screen.height()
 
-        window_width = int(screen_width * 0.98)
-        window_height = int(screen_height * 0.98)
+        window_width = int(screen_width * 0.7)
+        window_height = int(screen_height * 0.7)
         self.setFixedSize(window_width, window_height)
 
         self.setGeometry(

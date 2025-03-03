@@ -6,6 +6,8 @@ import numpy as np
 
 from utils.detection import Detection, Bbox
 from core.state import State
+from Easysort.easysort.common.logger import EasySortLogger
+logger = EasySortLogger()
 
 class ImageViewer(QWidget):
     def __init__(self, central_widget: QWidget, state: State):
@@ -31,7 +33,7 @@ class ImageViewer(QWidget):
         self.start_pos = None
         self.current_pos = None
 
-        self.on_current_frame_change()
+        self.canvas = None
 
     def on_video_change(self):
         # Should save detections before changing video
@@ -40,7 +42,8 @@ class ImageViewer(QWidget):
     def on_current_frame_change(self):
         self.current_frame = self._state.current_frame
         self.current_video = self._state.current_video
-        image_file = self._state.file_names[self._state.current_frame]
+        if self._state.file_names: image_file = self._state.file_names[self._state.current_frame]
+        else: return logger.critical("No image file found!")
         self.central_widget.update_frame_number(self._state.current_frame, len(self._state.file_names) - 1)
         self.img = cv2.imread(image_file)
         self.img = cv2.cvtColor(self.img, cv2.COLOR_BGR2RGB)

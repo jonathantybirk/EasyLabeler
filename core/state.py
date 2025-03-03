@@ -10,10 +10,10 @@ class State:
     def __init__(self, central_widget: QWidget):
         self.central_widget = central_widget
         self.load_videos()
-        self.current_video = self.video_list[0]
+        self.current_video = self.video_list[0] if self.video_list else None
         self.current_frame = 0
         self.load_files()
-        self.load_annotations()
+        self.detections = {}
         self.frame_to_detections = {} # TODO: Optimize using frame_to_detections when drawing detections
 
     def load_videos(self) -> list[str]:
@@ -21,8 +21,11 @@ class State:
         for dir_name in ['new', 'verified']:
             dir_path = os.path.join(DATA_DIR, dir_name)
             if not os.path.exists(dir_path): os.makedirs(dir_path)
-            subdirs = [d for d in os.listdir(dir_path) if os.path.isdir(os.path.join(dir_path, d))]
+
+            subdirs = [d for d in os.listdir(dir_path) if os.path.isdir(os.path.join(dir_path, d)) and os.listdir(os.path.join(dir_path, d))]
+
             for video_name in subdirs: videos.append(f"{dir_name}/{video_name}") if not video_name.startswith('.') else None
+
         self.video_list = sorted(videos)
 
     def set_current_video(self, video_name):
@@ -63,7 +66,7 @@ class State:
         if not os.path.exists(os.path.join(DATA_DIR, self.current_video, 'annotations.json')): self.detections = {}
         else:
             with open(os.path.join(DATA_DIR, self.current_video, 'annotations.json')) as f:
-                self.detections = {k: Detection.from_json(v) for k,v in json.load(f).items()}
+                self.detections = {int(k): Detection.from_json(v) for k,v in json.load(f).items()}
 
     def save_annotations(self):
         if self.detections:
